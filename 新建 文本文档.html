@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>专属告白</title>
+    <style>
+        body {
+            background: #fafafa;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+
+        .heart {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 90px;
+            border: 3px solid #ff85a2;
+            border-radius: 60px 60px 0 0;
+            background: transparent;
+            transition: inherit;
+        }
+
+        .heart::before {
+            left: 60px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            border-bottom: none;
+        }
+
+        .heart::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+            border-bottom: none;
+        }
+
+        .message {
+            color: #ff85a2;
+            font-size: 24px;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.5s;
+            text-shadow: 1px 1px 2px rgba(255, 133, 162, 0.2);
+        }
+
+        .visible {
+            opacity: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: #ff85a2;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: float 1s ease-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-80px) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart" id="heart"></div>
+    <div class="message" id="message">冀冀爱你哟</div>
+
+    <script>
+        const heart = document.getElementById('heart');
+        const message = document.getElementById('message');
+        let clickCount = 0;
+
+        heart.addEventListener('click', (e) => {
+            // 爱心跳动效果
+            heart.style.transform = `scale(${1 + clickCount*0.15})`;
+            
+            // 颜色渐变
+            const hue = 340 + clickCount*8;
+            heart.style.borderColor = `hsl(${hue}, 100%, 70%)`;
+            
+            // 创建粒子
+            createParticles(e.clientX, e.clientY);
+            
+            // 显示文字
+            if(clickCount++ === 3) {
+                message.classList.add('visible');
+                message.style.transform = `translateY(${clickCount*20}px)`;
+            }
+        });
+
+        function createParticles(x, y) {
+            for(let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.cssText = `
+                    width: ${Math.random()*8+4}px;
+                    height: ${Math.random()*8+4}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    animation-delay: ${Math.random()*0.2}s;
+                `;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+    </script>
+</body>
+</html>
